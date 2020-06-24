@@ -26,9 +26,9 @@ jobs:
     - uses: octokit/request-action@v2.x
       id: workflows
       with:
-          route: GET /repos/:repository/actions/workflows
-
+          route: GET /repos/:repository/actions/workflows/:workflow_id/runs
           repository: ${{ github.repository }}
+          workflow_id: ${{ github.workflow }}
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - run: "echo latest workflows: ${{ steps.workflows.outputs.data }}"
+    - run: "${{ steps.workflows.outputs.data }}"
