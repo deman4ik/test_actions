@@ -29,4 +29,4 @@ jobs:
           route: GET /repos/deman4ik/test_actions/actions/workflows/blank.yml/runs
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - run: "${{ steps.workflows.outputs.data }}"
+    - run: "data ${{ steps.workflows.outputs.data }}"
