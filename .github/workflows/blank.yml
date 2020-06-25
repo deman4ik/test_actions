@@ -22,21 +22,20 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
     - uses: actions/github-script@v2
+      id: latest-deploy-sha
       with:
+        result-encoding: string
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
          const {data: {workflow_runs}} = await github.actions.listWorkflowRuns({
-           owner:  "deman4ik",
-           repo: "test_actions",
+           owner: github.repository_owner,
+           repo: github.repository,
            workflow_id: "blank.yml"
          });
-         const result = workflow_runs.map(({head_branch, head_sha, status, conclusion})=>({head_branch, head_sha, status, conclusion}));
-         console.log(result);
-    # Runs a single command using the runners shell
-  #  - uses: octokit/request-action@v2.x
-  #    id: workflows
-  #    with:
-  #        route: GET /repos/deman4ik/test_actions/actions/workflows/blank.yml/runs
-  #    env:
-  #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #  - run: "data ${{ steps.workflows.outputs.data }}"
+         return workflow_runs.find(({ head_branch, status, conclusion }) =>
+                                   head_branch === github.ref &&
+                                   status === "completed" &&
+                                   conclusion === "success"
+                                   ).head_sha;
+                                   
+    - run: echo ${{steps.latest-deploy-sha.outputs.result}}
