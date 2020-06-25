@@ -29,12 +29,12 @@ jobs:
         script: |
          console.log(context);
          const {data: {workflow_runs}} = await github.actions.listWorkflowRuns({
-           owner: context.github.repository_owner,
-           repo: context.github.repository,
+           owner: context.payload.repository.full_name.split("/")[0],
+           repo: context.payload.repository.full_name.split("/")[1],
            workflow_id: "blank.yml"
          });
          return workflow_runs.find(({ head_branch, status, conclusion }) =>
-                                   head_branch === context.github.ref &&
+                                   head_branch === context.payload.ref.split("/")[2] &&
                                    status === "completed" &&
                                    conclusion === "success"
                                    ).head_sha;
