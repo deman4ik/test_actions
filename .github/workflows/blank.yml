@@ -21,12 +21,21 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
-    # Runs a single command using the runners shell
-    - uses: octokit/request-action@v2.x
-      id: workflows
+    - uses: actions/github-script@v2
       with:
-          route: GET /repos/deman4ik/test_actions/actions/workflows/blank.yml/runs
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - run: "data ${{ steps.workflows.outputs.data }}"
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+         const result = await github.actions.listWorkflowRuns({
+         "deman4ik",
+         "test_actions",
+         "blank.taml",
+         });
+         console.log(result);
+    # Runs a single command using the runners shell
+  #  - uses: octokit/request-action@v2.x
+  #    id: workflows
+  #    with:
+  #        route: GET /repos/deman4ik/test_actions/actions/workflows/blank.yml/runs
+  #    env:
+  #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #  - run: "data ${{ steps.workflows.outputs.data }}"
