@@ -26,7 +26,7 @@ jobs:
     - uses: octokit/request-action@v2.x
       id: workflows
       with:
-          route: GET /repos/deman4ik/test_actions/actions/workflows/.github/workflows/blank.yml/runs
+          route: GET /repos/deman4ik/test_actions/actions/workflows/blank.yml/runs
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - run: "${{ steps.workflows.outputs.data }}"
