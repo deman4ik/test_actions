@@ -26,9 +26,9 @@ jobs:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
          const result = await github.actions.listWorkflowRuns({
-         "deman4ik",
-         "test_actions",
-         "blank.yml"
+           owner:  "deman4ik",
+           repo: "test_actions",
+           workflow_id: "blank.yml"
          });
          console.log(result);
     # Runs a single command using the runners shell
