@@ -33,7 +33,7 @@ jobs:
                              return "--all";
                          } else if (list) {
                              return list;
-                         }:  
+                         }  
                                    
     - name: List services
       id: services
