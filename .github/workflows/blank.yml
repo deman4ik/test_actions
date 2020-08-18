@@ -22,21 +22,19 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
     - uses: actions/github-script@v2
-      id: latest-deploy-sha
+      id: history
       with:
         result-encoding: string
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
-         console.log(context);
-         const {data: {workflow_runs}} = await github.actions.listWorkflowRuns({
-           owner: context.payload.repository.full_name.split("/")[0],
-           repo: context.payload.repository.full_name.split("/")[1],
-           workflow_id: "blank.yml"
-         });
-         return workflow_runs.find(({ head_branch, status, conclusion }) =>
-                                   head_branch === context.payload.ref.split("/")[2] &&
-                                   status === "completed" &&
-                                   conclusion === "success"
-                                   ).head_sha;
+         const matched = context.payload.head_commit.message.match(/(?<=DEPLOY \|).*?(?=\s*\|)/gs);
+                      const list = matched && Array.isArray(matched) && matched.length > 0 ? matched[0].trim() : null;
+                      if (list === "ALL") {
+                             return "--all";
+                         } else if (list) {
+                             return list;
+                         }:  
                                    
-    - run: echo ${{steps.latest-deploy-sha.outputs.result}}
+    - name: List services
+      id: services
+      run: if [[ ${{steps.history.outputs.result}} == *"--"* ]]; then echo ::set-output name=list::$(node ./node_modules/@nrwl/cli/bin/nx.js affected:apps --plain ${{steps.history.outputs.result}} ) else echo ::set-output name=list::${{steps.history.outputs.result}} fi
