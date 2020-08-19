@@ -40,7 +40,7 @@ jobs:
       run: |
        if [[ ${{steps.history.outputs.result}} == *"--"* ]]; 
        then 
-          echo ::set-output name=list::$(node ./node_modules/@nrwl/cli/bin/nx.js affected:apps --plain ${{steps.history.outputs.result}} ) 
+          echo ::set-output name=list::all
        else 
           echo ::set-output name=list::${{steps.history.outputs.result}}
        fi
