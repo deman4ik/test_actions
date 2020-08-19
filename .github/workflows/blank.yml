@@ -37,4 +37,13 @@ jobs:
                                    
     - name: List services
       id: services
-      run: if [[ ${{steps.history.outputs.result}} == *"--"* ]]; then echo ::set-output name=list::$(node ./node_modules/@nrwl/cli/bin/nx.js affected:apps --plain ${{steps.history.outputs.result}} ) else echo ::set-output name=list::${{steps.history.outputs.result}} fi
+      run: |
+       if [[ ${{steps.history.outputs.result}} == *"--"* ]]; 
+       then 
+          echo ::set-output name=list::$(node ./node_modules/@nrwl/cli/bin/nx.js affected:apps --plain ${{steps.history.outputs.result}} ) 
+       else 
+          echo ::set-output name=list::${{steps.history.outputs.result}}
+       fi
+       
+    - name: Echo services
+      run: echo ${{ steps.services.outputs.list }}
